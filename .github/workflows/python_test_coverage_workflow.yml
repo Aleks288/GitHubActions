@@ -35,15 +35,14 @@ jobs:
           timestamp=$(date +'%Y%m%d%H%M%S')
           coverage_report="coverage_${timestamp}.txt"
           echo $coverage_report
-          coverage run -m pytest || true
+          coverage run -m pytest
+          test_exit_code=$?
           coverage report -m > $coverage_report
-
-      - name: Check coverage
-        run: |
+          
           coverage_percent=$(coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
           if (( $(echo "$coverage_percent < 70" | bc -l) )); then 
             echo "Coverage is below 70%. Coverage: $coverage_percent%"
-            exit 1
+            exit $test_exit_code
           fi
           echo "Coverage is sufficient: $coverage_percent%"
 
