@@ -40,7 +40,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          timestamp=$(date + '%Y%m%d%H%M%S')
+          timestamp=$(date +'%Y%m%d%H%M%S')
           coverage_report="coverage_${timestamp}.txt"
           echo $coverage_report
           poetry run coverage run -m pytest
