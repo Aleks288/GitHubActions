@@ -41,13 +41,12 @@ jobs:
 
       - name: Check coverage
         run: |
-          echo "Coverage report: $(coverage report)"
-#          coverage_percent=$(coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
-#          if (( $(echo "$coverage_percent < 70" | bc -l) )); then
-#            echo "Coverage is below 70%. Coverage: $coverage_percent%"
-#            exit 1
-#          fi
-#          echo "Coverage is sufficient: $coverage_percent%"
+          coverage_percent=$(coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
+          if (( $(echo "$coverage_percent < 70" | bc -l) )); then
+            echo "Coverage is below 70%. Coverage: $coverage_percent%"
+            exit 1
+          fi
+          echo "Coverage is sufficient: $coverage_percent%"
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
