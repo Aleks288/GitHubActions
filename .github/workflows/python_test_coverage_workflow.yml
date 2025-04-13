@@ -1,0 +1,59 @@
+# This is a basic workflow to help you get started with Actions
+name: CI to run python tests and check if coverage >= 70%
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "develop" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="$HOME/.local/bin:$PATH"
+
+      - name: Install dependencies
+        run: poetry install --with test
+
+      - name: Run tests with coverage
+        run: |
+          timestamp=$(date + '%Y%m%d%H%M%S')
+          coverage_report="coverage_${timestamp}.txt"
+          echo $coverage_report
+          poetry run coverage run -m pytest
+          poetry run coverage report -m > $coverage_report
+
+      - name: Check coverage
+        run: |
+          coverage_percent=$(poetry run coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
+          if (( $(echo "$coverage_percent < 70" | bc -l) )); then 
+            echo "Coverage is below 70%. Coverage: $coverage_percent%"
+            exit 1
+          fi
+          echo "Coverage is sufficient: $coverage_percent%"
+
+      - name: Upload coverage report
+        uses: action/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage_*.txt
