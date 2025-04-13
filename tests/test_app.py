@@ -9,10 +9,13 @@ def test_subtract():
     """Tests the subtraction function."""
     assert subtract(5, 3) == 2
 
-@pytest.mark.xfail
 def test_multiply():
     """Tests the multiply function."""
-    assert wrongMultiply(5, 3) == 15
+    a = wrongMultiply(5, 3)
+    if a != 15:
+        pytest.fail("Wrong answer")
+    else:
+        assert true
 
 def test_increment():
     """Tests the subtraction function."""
