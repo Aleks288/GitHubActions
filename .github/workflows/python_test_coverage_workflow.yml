@@ -27,14 +27,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="$HOME/.local/bin:$PATH"
-
-      - name: Install build tools
-        run: pip install --upgrade pip setuptools wheel
-
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -43,13 +35,12 @@ jobs:
           timestamp=$(date +'%Y%m%d%H%M%S')
           coverage_report="coverage_${timestamp}.txt"
           echo $coverage_report
-          poetry init
-          poetry run coverage run -m pytest
-          poetry run coverage report -m > $coverage_report
+          coverage run -m pytest
+          coverage report -m > $coverage_report
 
       - name: Check coverage
         run: |
-          coverage_percent=$(poetry run coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
+          coverage_percent=$(coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
           if (( $(echo "$coverage_percent < 70" | bc -l) )); then 
             echo "Coverage is below 70%. Coverage: $coverage_percent%"
             exit 1
