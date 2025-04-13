@@ -43,6 +43,7 @@ jobs:
           timestamp=$(date +'%Y%m%d%H%M%S')
           coverage_report="coverage_${timestamp}.txt"
           echo $coverage_report
+          poetry init
           poetry run coverage run -m pytest
           poetry run coverage report -m > $coverage_report
 
