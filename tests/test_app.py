@@ -15,4 +15,4 @@ def test_multiply():
 
 def test_increment():
     """Tests the subtraction function."""
-    assert increment(a) == a + 1
+    assert increment(5) == 5 + 1
