@@ -33,7 +33,7 @@ jobs:
           export PATH="$HOME/.local/bin:$PATH"
 
       - name: Install dependencies
-        run: poetry install --with test
+        run: pip install -r requirements.txt
 
       - name: Run tests with coverage
         run: |
