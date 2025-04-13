@@ -32,6 +32,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
+          set +e
           timestamp=$(date +'%Y%m%d%H%M%S')
           coverage_report="coverage_${timestamp}.txt"
           echo $coverage_report
@@ -39,7 +40,7 @@ jobs:
 
       - name: Check coverage
         run: |
-          coverage_percent=$(coverage report | tail -n 1 | awk '{print $4}' | tr -d '%')
+          coverage_percent=$(cat $coverage_report | tail -n 1 | awk '{print $4}' | tr -d '%')
           if (( $(echo "$coverage_percent < 70" | bc -l) )); then 
             echo "Coverage is below 70%. Coverage: $coverage_percent%"
             exit 1
